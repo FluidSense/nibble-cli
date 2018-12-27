@@ -21,6 +21,6 @@ Nibble list
 Nibble config  
 • user //Remember username
   
-Nibble balance
+Nibble balance  
 //See current balance
 
