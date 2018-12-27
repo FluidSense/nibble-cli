@@ -19,6 +19,8 @@ Nibble list
 //List buyable items  
 
 Nibble config  
-• card [EM-nr] //add rfid by converting em  
-• card -rfid [RFID] //add rfid  
+• user //Remember username
+  
+Nibble balance
+//See current balance
 
