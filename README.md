@@ -24,3 +24,7 @@ Nibble config
 Nibble balance  
 //See current balance
 
+## CLI  
+  
+---
+CLI is based on Click
