@@ -1,15 +1,46 @@
+import os
+from configparser import ConfigParser
 import click
-from list import getStore
+from list import getStore, printPriceList, initAppDir
 
 staged = {}
 
+APP_NAME = 'Nibble CLI'
+
+def read_config():
+    cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
+    parser = ConfigParser()
+    parser.read([cfg])
+    rv = {}
+    for section in parser.sections():
+        for key, value in parser.items(section):
+            rv['%s.%s' % (section, key)] = value
+    return rv
+
+def write_config(readfile=None, init=False):
+    config = ConfigParser()
+    if readfile:
+        config.read_dict(readfile)
+    elif init:
+        getStore()
+        config["DEFAULT"] = {}
+    cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
+    with open(cfg,"w") as configfile:
+        config.write(configfile)
+
+
 @click.group()
+@click.option("--init", is_flag=True, callback=initAppDir, is_eager=True, expose_value=False)
 def main():
-    pass
+    config = read_config()
 
 @main.command()
-def list():
-    getStore()
+@click.option("--update", default=False, is_flag=True, help="force download of fresh item list")
+def list(update):
+    if update:
+        getStore()
+    printPriceList()
+
 
 @main.command("add")
 @click.argument("item", type=str)
@@ -25,10 +56,18 @@ def status():
     click.echo("Not yet implemented")
 
 @main.command("buy")
+@click.option("--username", default= lambda: os.environ.get("USER", ""))
 @click.option('--password', prompt=True, hide_input=True)
 def buy(password):
-    #TODO Pass staged items to OW to buy.
+    #TODO Pass staged items to OW to buy, and get username from .
     click.echo("Not yet implemented.")
+
+@main.command("reset")
+@click.option("-i","--item")
+@click.option("--all")
+def reset(item, all):
+    #TODO
+    click.echo("Not yet implemented")
 
 @main.command("balance")
 def balance():
