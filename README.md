@@ -27,4 +27,4 @@ Nibble balance
 ## CLI  
   
 ---
-CLI is based on Click
+CLI is based on [Click](https://click.palletsprojects.com/en/7.x/)
