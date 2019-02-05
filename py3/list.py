@@ -15,8 +15,12 @@ def initAppDir(ctx, param, value):
 def getStore():
     store = requests.get("https://online.ntnu.no/api/v1/inventory")
     store = json.loads(store.text) if store.status_code == 200 else print("Error fetching inventory: " + str(store.status_code))
-    with open(storepath,"w+") as storefile:
-        json.dump(store,storefile)
+    try:
+        with open(storepath,"w+") as storefile:
+            json.dump(store,storefile)
+    except FileNotFoundError:
+        print("could not save store, try --init if it's the first time using Nibble CLI")
+        return
 
 def printPriceList():
     try:
@@ -24,8 +28,8 @@ def printPriceList():
             store = json.load(storefile)
     except FileNotFoundError:
         print("Could not read store, try --update to force reload")
-        return False
+        return 
     priceList = {k["name"]:k["price"] for k in store}
     for k,v in priceList.items():
-        print(k, v)
+        print(k,":", v)
     return priceList

@@ -2,6 +2,7 @@ import os
 from configparser import ConfigParser
 import click
 from list import getStore, printPriceList, initAppDir
+from stage import stageItem, stageStatus
 
 staged = {}
 
@@ -46,14 +47,13 @@ def list(update):
 @click.argument("item", type=str)
 @click.option("-a", "--amount", default=1, help="amount you wish to buy")
 def add(item, amount):
-    global staged
     #TODO Save and load dict inbetween commands
-    staged[item] = amount
+    stageItem(item, amount)
 
 @main.command("status")
 def status():
     #TODO Echo staged items
-    click.echo("Not yet implemented")
+    stageStatus()
 
 @main.command("buy")
 @click.option("--username", default= lambda: os.environ.get("USER", ""))
@@ -66,7 +66,7 @@ def buy(password):
 @click.option("-i","--item")
 @click.option("--all")
 def reset(item, all):
-    #TODO
+    #TODO Reset either all or single staged item
     click.echo("Not yet implemented")
 
 @main.command("balance")
@@ -74,7 +74,7 @@ def balance():
     #TODO Get balance from API
     click.echo("Not yet implemented")
 
-# Perhaps extract this and subcommands to it's own file
+# FIXME Perhaps extract this and subcommands to it's own file
 @click.group()
 def config():
     pass
