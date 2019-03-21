@@ -3,7 +3,7 @@ class Cart:
     def __init__(self):
         self.inventory = []
 
-    def add(self, item):
+    def addItem(self, item):
         self.inventory.add(item)
 
 class Item:
