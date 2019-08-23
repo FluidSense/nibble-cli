@@ -9,6 +9,7 @@ staged = {}
 
 APP_NAME = 'Nibble CLI'
 
+
 def read_config():
     cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
     parser = ConfigParser()
@@ -19,6 +20,7 @@ def read_config():
             rv['%s.%s' % (section, key)] = value
     return rv
 
+
 def write_config(readfile=None, init=False):
     config = ConfigParser()
     if readfile:
@@ -27,7 +29,7 @@ def write_config(readfile=None, init=False):
         getStore()
         config["DEFAULT"] = {}
     cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
-    with open(cfg,"w+") as configfile:
+    with open(cfg, "w+") as configfile:
         config.write(configfile)
 
 
@@ -61,7 +63,7 @@ def status():
 @click.option("--username", default= lambda: os.environ.get("USER", ""))
 @click.option('--password', prompt=True, hide_input=True)
 def buy(password):
-    #TODO Pass staged items to OW to buy, and get username from .
+    # TODO Pass staged items to OW to buy, and get username from .
     click.echo("Not yet implemented.")
 
 @main.command("reset")
@@ -79,11 +81,11 @@ def reset(item, quantity, all):
 
 @main.command("balance")
 def balance():
-    #TODO Get balance from API
+    # TODO Get balance from API
     click.echo("Not yet implemented")
     username = click.prompt("Enter username")
     password = click.prompt("Password", hide_input=True)
-    headers = {'content-type': 'application/json', 'authentication:':''}
+    headers = {'content-type': 'application/json', 'authentication:': ''}
     balance = requests.get("https://online.ntnu.no/api/v1/usersaldo/", headers=headers)
 
 @click.group(name="Config")
