@@ -1,8 +1,9 @@
 import os
 from configparser import ConfigParser
 import click
-from list import getStore, printPriceList, initAppDir
-from stage import stageItem, stageStatus
+import requests
+from list import getStore, printPriceList, initAppDir, readStore, getItemNames
+from stage import stageItem, stageStatus, resetAll, resetItem
 
 staged = {}
 
@@ -26,7 +27,7 @@ def write_config(readfile=None, init=False):
         getStore()
         config["DEFAULT"] = {}
     cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
-    with open(cfg,"w") as configfile:
+    with open(cfg,"w+") as configfile:
         config.write(configfile)
 
 
@@ -47,12 +48,13 @@ def list(update):
 @click.argument("item", type=str)
 @click.option("-a", "--amount", default=1, help="amount you wish to buy")
 def add(item, amount):
-    #TODO Save and load dict inbetween commands
+    if item not in [k["name"] for k in readStore()]:
+        click.echo(f"'{item}' not in item list. See 'nibble list' for options")
+        return
     stageItem(item, amount)
 
 @main.command("status")
 def status():
-    #TODO Echo staged items
     stageStatus()
 
 @main.command("buy")
@@ -63,24 +65,27 @@ def buy(password):
     click.echo("Not yet implemented.")
 
 @main.command("reset")
-@click.option("-i","--item")
-@click.option("--all")
-def reset(item, all):
-    #TODO Reset either all or single staged item
-    click.echo("Not yet implemented")
+@click.argument("item", required=False, default=None, type=str)
+@click.option("--quantity","-q", type=str, default=None)
+@click.option("--all", default=False, is_flag=True)
+def reset(item, quantity, all):
+    if item and quantity:
+        resetItem(item, quantity)
+    elif item:
+        resetItem(item)
+    elif all:
+        resetAll()
+
 
 @main.command("balance")
 def balance():
     #TODO Get balance from API
     click.echo("Not yet implemented")
+    username = click.prompt("Enter username")
+    password = click.prompt("Password", hide_input=True)
+    headers = {'content-type': 'application/json', 'authentication:':''}
+    balance = requests.get("https://online.ntnu.no/api/v1/usersaldo/", headers=headers)
 
-# FIXME Perhaps extract this and subcommands to it's own file
-@click.group()
-def config():
-    pass
-
-@config.command("user")
-@click.argument("username")
-def addUsername(username):
-    #TODO
-    pass
+@click.group(name="Config")
+def user_config():
+    config = read_config()

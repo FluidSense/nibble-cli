@@ -22,13 +22,17 @@ def getStore():
         print("could not save store, try --init if it's the first time using Nibble CLI")
         return
 
-def printPriceList():
+def readStore():
     try:
         with open(storepath) as storefile:
             store = json.load(storefile)
+            return store
     except FileNotFoundError:
         print("Could not read store, try --update to force reload")
-        return 
+        return
+
+def printPriceList():
+    store = readStore()
     priceList = {k["name"]:k["price"] for k in store}
     for k,v in priceList.items():
         print(k,":", v)

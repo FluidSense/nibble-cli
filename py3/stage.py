@@ -10,24 +10,31 @@ def initStageFileIfNotExists():
     with open(stagepath, "w+") as stagefile:
       json.dump({},stagefile)
 
-def stageItem(item, amount):
+def readStaged():
   global stagepath
-  initStageFileIfNotExists()
   try:
     with open(stagepath) as stagefile:
       staged = json.load(stagefile)
+      return staged
   except FileNotFoundError:
-    print("Could not stage item. If this is the first time you run Nibble CLI, run 'nibble --init'")
-    return
+    print("Could not complete action due to missing staging area. Run nibble --init")
 
+def updateStaged(newStaged):
+  global stagepath
+  with open(stagepath, "w+") as stagefile:
+    json.dump(newStaged,stagefile)
+
+def stageItem(item, amount):
+  global stagepath
+  initStageFileIfNotExists()
+  staged = readStaged()
   if item in staged:
     oldAmount = staged[item]
     if click.confirm(f"{item} already staged with amount of {oldAmount}. Overwrite amount?", abort=True):
       staged[item] = amount
   else:
     staged[item] = amount
-  with open(stagepath, "w") as stagefile:
-    json.dump(staged, stagefile)
+  updateStaged(staged)
 
 def stageStatus():
   global stagepath
@@ -38,4 +45,18 @@ def stageStatus():
     print("Run 'nibble --init'")
     return
 
-  
+def resetItem(item, quantity=None):
+  global stagepath
+  initStageFileIfNotExists()
+  staged = readStaged()
+  if quantity and item:
+    if item in staged:
+      staged[item] -= quantity
+  else:
+    staged.pop(item, None)
+  updateStaged(staged)
+
+def resetAll():
+  global stagepath
+  updateStaged({})
+
