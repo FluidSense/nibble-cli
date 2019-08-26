@@ -42,5 +42,5 @@ def printPriceList():
     store = readStore()
     priceList = {k["name"]: k["price"] for k in store}
     for k, v in priceList.items():
-        print(k, ":", v)
+        print(k, ":", f"{v}kr")
     return priceList
