@@ -18,9 +18,9 @@ import time
 import secrets
 
 flask_app = Flask(__name__)
-client_id = "86d694b1-f090-42b8-8341-3bb46e1bcf9c"
+client_id = 
 oauth_access_token = None
-scope = "profile"
+scope = "userid-feide"
 code_verifier = secrets.token_urlsafe()
 code_challenge = create_s256_code_challenge(code_verifier)
 authorize_url = "https://auth.dataporten.no/oauth/authorization"
