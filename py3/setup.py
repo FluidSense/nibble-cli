@@ -6,6 +6,7 @@ setup(
     py_modules=['nibble'],
     install_requires=[
         'Click',
+        'Flask'
     ],
     entry_points='''
         [console_scripts]
