@@ -2,12 +2,14 @@ import os
 from configparser import ConfigParser
 import click
 import requests
-from list import getStore, printPriceList, initAppDir, readStore, getItemNames
+from list import getStore, printPriceList, initAppDir, readStore
 from stage import stageItem, stageStatus, resetAll, resetItem
+from auth import getAuthorizedUser
 
 staged = {}
 
 APP_NAME = 'Nibble CLI'
+
 
 def read_config():
     cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
@@ -19,6 +21,7 @@ def read_config():
             rv['%s.%s' % (section, key)] = value
     return rv
 
+
 def write_config(readfile=None, init=False):
     config = ConfigParser()
     if readfile:
@@ -27,7 +30,7 @@ def write_config(readfile=None, init=False):
         getStore()
         config["DEFAULT"] = {}
     cfg = os.path.join(click.get_app_dir(APP_NAME), 'config.ini')
-    with open(cfg,"w+") as configfile:
+    with open(cfg, "w+") as configfile:
         config.write(configfile)
 
 
@@ -46,7 +49,7 @@ def list(update):
 
 @main.command("add")
 @click.argument("item", type=str)
-@click.option("-a", "--amount", default=1, help="amount you wish to buy")
+@click.option("-q", "--quantity", default=1, help="amount you wish to buy")
 def add(item, amount):
     if item not in [k["name"] for k in readStore()]:
         click.echo(f"'{item}' not in item list. See 'nibble list' for options")
@@ -61,12 +64,12 @@ def status():
 @click.option("--username", default= lambda: os.environ.get("USER", ""))
 @click.option('--password', prompt=True, hide_input=True)
 def buy(password):
-    #TODO Pass staged items to OW to buy, and get username from .
+    # TODO Pass staged items to OW to buy, and get username from .
     click.echo("Not yet implemented.")
 
 @main.command("reset")
 @click.argument("item", required=False, default=None, type=str)
-@click.option("--quantity","-q", type=str, default=None)
+@click.option("--quantity", "-q", type=str, default=None)
 @click.option("--all", default=False, is_flag=True)
 def reset(item, quantity, all):
     if item and quantity:
@@ -79,12 +82,10 @@ def reset(item, quantity, all):
 
 @main.command("balance")
 def balance():
-    #TODO Get balance from API
-    click.echo("Not yet implemented")
-    username = click.prompt("Enter username")
-    password = click.prompt("Password", hide_input=True)
-    headers = {'content-type': 'application/json', 'authentication:':''}
-    balance = requests.get("https://online.ntnu.no/api/v1/usersaldo/", headers=headers)
+    # TODO Get balance from API
+    oauth_token = getAuthorizedUser()
+    print(oauth_token)
+
 
 @click.group(name="Config")
 def user_config():

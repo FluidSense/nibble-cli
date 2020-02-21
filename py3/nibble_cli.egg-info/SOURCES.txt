@@ -1,0 +1,7 @@
+nibble.py
+nibble_cli.egg-info/PKG-INFO
+nibble_cli.egg-info/SOURCES.txt
+nibble_cli.egg-info/dependency_links.txt
+nibble_cli.egg-info/entry_points.txt
+nibble_cli.egg-info/requires.txt
+nibble_cli.egg-info/top_level.txt

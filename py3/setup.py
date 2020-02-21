@@ -7,6 +7,7 @@ setup(
     install_requires=[
         'Click',
         'requests'
+        'Flask'
     ],
     entry_points='''
         [console_scripts]
