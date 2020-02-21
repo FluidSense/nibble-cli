@@ -1,1 +1,4 @@
 Click
+requests
+OAuth2Session
+Flask
