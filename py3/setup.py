@@ -6,8 +6,9 @@ setup(
     py_modules=['nibble'],
     install_requires=[
         'Click',
-        'requests'
-        'Flask'
+        'requests',
+        'Flask',
+        'Authlib'
     ],
     entry_points='''
         [console_scripts]

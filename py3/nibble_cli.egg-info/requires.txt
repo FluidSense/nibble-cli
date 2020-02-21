@@ -1,4 +1,4 @@
 Click
 requests
-OAuth2Session
+requests_oauthlib
 Flask
