@@ -17,9 +17,14 @@ import webbrowser
 import time
 import secrets
 import os
+import sys
 
 flask_app = Flask(__name__)
-client_id = os.environ["OW4_SSO_CLIENT_ID"]
+try:
+    client_id = os.environ["OW4_SSO_CLIENT_ID"]
+except KeyError:
+    print("ERROR: Missing environment variable OW4_SSO_CLIENT_ID")
+    sys.exit(1)
 oauth_access_token = None
 scope = "openid profile onlineweb4"
 code_verifier = secrets.token_urlsafe()
