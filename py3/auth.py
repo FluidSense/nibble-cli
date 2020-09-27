@@ -9,21 +9,22 @@ Authorization flow:
 7. Kill web browser window
 '''
 
-from authlib.client import OAuth2Session
+from authlib.integrations.requests_client import OAuth2Session
 from flask import Flask, request
 from authlib.oauth2.rfc7636 import create_s256_code_challenge
 import threading
 import webbrowser
 import time
 import secrets
+import os
 
 flask_app = Flask(__name__)
-client_id = 
+client_id = os.environ["OW4_SSO_CLIENT_ID"]
 oauth_access_token = None
-scope = "userid-feide"
+scope = "openid profile onlineweb4"
 code_verifier = secrets.token_urlsafe()
 code_challenge = create_s256_code_challenge(code_verifier)
-authorize_url = "https://auth.dataporten.no/oauth/authorization"
+authorize_url = "https://online.ntnu.no/openid/authorize"
 session = OAuth2Session(
     client_id,
     scope=scope,
@@ -50,7 +51,7 @@ def getAuthorizedUser():
 def recieveAccessToken():
     global oauth_access_token
     global client_id
-    access_url = "https://auth.dataporten.no/oauth/token"
+    access_url = "https://online.ntnu.no/openid/token"
     token = session.fetch_access_token(
         access_url,
         authorization_response=request.url,
