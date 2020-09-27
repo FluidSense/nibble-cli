@@ -2,7 +2,7 @@ import os
 from configparser import ConfigParser
 import click
 import requests
-from list import getStore, printPriceList, initAppDir, readStore
+from list_items import getStore, printPriceList, initAppDir, readStore
 from stage import stageItem, stageStatus, resetAll, resetItem
 from auth import getAuthorizedUser
 
