@@ -1,4 +1,4 @@
+Authlib
 Click
-requests
-requests_oauthlib
 Flask
+requests
