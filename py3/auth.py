@@ -25,11 +25,27 @@ try:
 except KeyError:
     print("ERROR: Missing environment variable OW4_SSO_CLIENT_ID")
     sys.exit(1)
+
+env = os.environ.get("ENV", "development")
+oauth_or_OIDC = os.environ.get("PROTOCOL", "OIDC")
+
+def get_base_url():
+    url = ""
+    if env == "development":
+        url += "http://localhost:8000/"
+    else:
+        url += "https://online.ntnu.no/"
+    if oauth_or_OIDC == "OIDC":
+        url += "openid/"
+    else:
+        url += "o/"
+    return url
+
 oauth_access_token = None
-scope = "openid profile onlineweb4"
+scope = "openid profile"
 code_verifier = secrets.token_urlsafe()
 code_challenge = create_s256_code_challenge(code_verifier)
-authorize_url = "https://online.ntnu.no/openid/authorize"
+authorize_url = f"{get_base_url()}authorize"
 session = OAuth2Session(
     client_id,
     scope=scope,
@@ -56,13 +72,15 @@ def getAuthorizedUser():
 def recieveAccessToken():
     global oauth_access_token
     global client_id
-    access_url = "https://online.ntnu.no/openid/token"
+    global env
+    access_url = f"{get_base_url()}token/" 
+    print(f"request.url: {request.url}, client_id: {client_id}")
     token = session.fetch_access_token(
         access_url,
         authorization_response=request.url,
         code_verifier=code_verifier)
     oauth_access_token = token
-    return "{}"
+    return "Du kan nå trygt lukke denne fanen."
 
 
 class ServerThread(threading.Thread):
