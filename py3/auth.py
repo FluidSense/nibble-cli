@@ -38,11 +38,11 @@ def get_base_url():
     if oauth_or_OIDC == "OIDC":
         url += "openid/"
     else:
-        url += "o/"
+        url += "sso/o/"
     return url
 
 oauth_access_token = None
-scope = "openid profile"
+scope = "oidc read write"
 code_verifier = secrets.token_urlsafe()
 code_challenge = create_s256_code_challenge(code_verifier)
 authorize_url = f"{get_base_url()}authorize"
@@ -73,10 +73,11 @@ def recieveAccessToken():
     global oauth_access_token
     global client_id
     global env
-    access_url = f"{get_base_url()}token/" 
+    access_url = f"{get_base_url()}token/"
     print(f"request.url: {request.url}, client_id: {client_id}")
     token = session.fetch_access_token(
         access_url,
+        grant_type='authorization_code',
         authorization_response=request.url,
         code_verifier=code_verifier)
     oauth_access_token = token
